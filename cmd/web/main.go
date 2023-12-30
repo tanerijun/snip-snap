@@ -14,7 +14,6 @@ type application struct {
 }
 
 func main() {
-	// CLI flags
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	staticDir := flag.String("static-dir", "./ui/static", "Path to static assets")
 
