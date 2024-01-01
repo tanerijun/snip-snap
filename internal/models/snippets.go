@@ -1,8 +1,11 @@
 package models
 
 import (
+	"context"
+	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -19,7 +22,23 @@ type SnippetModel struct {
 }
 
 func (m *SnippetModel) Insert(title string, content string, expires int) (int, error) {
-	return 0, nil
+	stmt := `INSERT INTO snippets (title, content, created, expires)
+	VALUES (@title, @content, NOW(), NOW() + make_interval(days => @expires))
+	RETURNING id`
+	args := pgx.NamedArgs{
+		"title":   title,
+		"content": content,
+		"expires": expires,
+	}
+
+	var id int
+	err := m.DB.QueryRow(context.Background(), stmt, args).Scan(&id)
+	if err != nil {
+		fmt.Println("Hello")
+		return 0, err
+	}
+
+	return id, nil
 }
 
 func (m *SnippetModel) Get(id int) (*Snippet, error) {
