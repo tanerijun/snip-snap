@@ -27,16 +27,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	dbpool, err := pgxpool.New(context.Background(), *dsn)
+	dbpool, err := openDb(*dsn)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
 	defer dbpool.Close()
-
-	err = dbpool.Ping(context.Background())
-	if err != nil {
-		log.Fatalf("Unable to connect to database: %v\n", err)
-	}
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
@@ -57,4 +52,18 @@ func main() {
 	infoLog.Printf("Server started on %s", *addr)
 	err = server.ListenAndServe()
 	errorLog.Fatal(err)
+}
+
+func openDb(connStr string) (*pgxpool.Pool, error) {
+	dbpool, err := pgxpool.New(context.Background(), connStr)
+	if err != nil {
+		return nil, err
+	}
+
+	err = dbpool.Ping(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	return dbpool, nil
 }
