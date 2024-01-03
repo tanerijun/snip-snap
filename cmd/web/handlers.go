@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"text/template"
 
 	"github.com/tanerijun/snip-snap/internal/models"
 )
@@ -61,7 +62,22 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%+v", snippet)
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/view.tmpl.html",
+	}
+
+	tmpl, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, nil)
+		return
+	}
+
+	err = tmpl.ExecuteTemplate(w, "base", snippet)
+	if err != nil {
+		app.serverError(w, nil)
+	}
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
