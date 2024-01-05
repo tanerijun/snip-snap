@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 // serverError writes an error message and stack trace to the errorLog,
@@ -24,6 +25,12 @@ func (app *application) clientError(w http.ResponseWriter, status int) {
 // notFound sends a 404 Not Found response to the user.
 func (app *application) notFound(w http.ResponseWriter) {
 	app.clientError(w, http.StatusNotFound)
+}
+
+func (app *application) newTemplateData(r *http.Request) *templateData {
+	return &templateData{
+		CurrentYear: time.Now().Year(),
+	}
 }
 
 func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {

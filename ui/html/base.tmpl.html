@@ -17,10 +17,15 @@
   <header>
     <h1><a href='/'>Snip-Snap</a></h1>
     {{template "nav" .}}
-    <main>
-      {{template "main" .}}
-    </main>
   </header>
+
+  <main>
+    {{template "main" .}}
+  </main>
+
+  <footer>
+    Generated in {{.CurrentYear}}
+  </footer>
 
   <script src="/static/js/main.js" type="text/javascript"></script>
 </body>
