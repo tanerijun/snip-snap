@@ -28,7 +28,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		"./ui/html/pages/home.tmpl.html",
 	}
 
-	tmpl, err := template.ParseFiles(files...)
+	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -38,7 +38,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		Snippets: snippets,
 	}
 
-	err = tmpl.ExecuteTemplate(w, "base", data)
+	err = ts.ExecuteTemplate(w, "base", data)
 	if err != nil {
 		app.serverError(w, err)
 	}
@@ -67,7 +67,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		"./ui/html/pages/view.tmpl.html",
 	}
 
-	tmpl, err := template.ParseFiles(files...)
+	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		app.serverError(w, nil)
 		return
@@ -77,7 +77,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		Snippet: snippet,
 	}
 
-	err = tmpl.ExecuteTemplate(w, "base", data)
+	err = ts.ExecuteTemplate(w, "base", data)
 	if err != nil {
 		app.serverError(w, nil)
 	}
