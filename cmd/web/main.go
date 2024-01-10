@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"flag"
 	"html/template"
 	"log"
@@ -67,12 +68,17 @@ func main() {
 		sessionManager: sessionManager,
 	}
 
+	tlsConfig := &tls.Config{
+		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256}, // use only elliptic curves with assembly implementations to save compute power
+	}
+
 	mux := app.routes(*staticDir)
 
 	server := &http.Server{
-		Addr:     *addr,
-		ErrorLog: errorLog,
-		Handler:  mux,
+		Addr:      *addr,
+		ErrorLog:  errorLog,
+		Handler:   mux,
+		TLSConfig: tlsConfig,
 	}
 
 	infoLog.Printf("Server started on %s", *addr)
