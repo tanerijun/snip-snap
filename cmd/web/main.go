@@ -75,10 +75,13 @@ func main() {
 	mux := app.routes(*staticDir)
 
 	server := &http.Server{
-		Addr:      *addr,
-		ErrorLog:  errorLog,
-		Handler:   mux,
-		TLSConfig: tlsConfig,
+		Addr:         *addr,
+		ErrorLog:     errorLog,
+		Handler:      mux,
+		TLSConfig:    tlsConfig,
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	infoLog.Printf("Server started on %s", *addr)
