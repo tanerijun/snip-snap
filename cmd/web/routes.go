@@ -14,20 +14,23 @@ func (app *application) routes(staticDir string) http.Handler {
 		app.notFound(w)
 	})
 
-	dynamicMiddlewares := alice.New(app.sessionManager.LoadAndSave)
-
 	fileServer := http.FileServer(http.Dir(staticDir))
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
+	dynamicMiddlewares := alice.New(app.sessionManager.LoadAndSave)
+
 	router.Handler(http.MethodGet, "/", dynamicMiddlewares.ThenFunc(app.home))
 	router.Handler(http.MethodGet, "/snippet/view/:id", dynamicMiddlewares.ThenFunc(app.snippetView))
-	router.Handler(http.MethodGet, "/snippet/create", dynamicMiddlewares.ThenFunc(app.snippetCreate))
-	router.Handler(http.MethodPost, "/snippet/create", dynamicMiddlewares.ThenFunc(app.snippetCreatePost))
 	router.Handler(http.MethodGet, "/user/login", dynamicMiddlewares.ThenFunc(app.userLogin))
 	router.Handler(http.MethodPost, "/user/login", dynamicMiddlewares.ThenFunc(app.userLoginPost))
 	router.Handler(http.MethodGet, "/user/signup", dynamicMiddlewares.ThenFunc(app.userSignup))
 	router.Handler(http.MethodPost, "/user/signup", dynamicMiddlewares.ThenFunc(app.userSignupPost))
-	router.Handler(http.MethodPost, "/user/logout", dynamicMiddlewares.ThenFunc(app.userLogout))
+
+	protectedMiddlewares := dynamicMiddlewares.Append(app.requireAuthentication)
+
+	router.Handler(http.MethodGet, "/snippet/create", protectedMiddlewares.ThenFunc(app.snippetCreate))
+	router.Handler(http.MethodPost, "/snippet/create", protectedMiddlewares.ThenFunc(app.snippetCreatePost))
+	router.Handler(http.MethodPost, "/user/logout", protectedMiddlewares.ThenFunc(app.userLogout))
 
 	standardMiddlewares := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 
