@@ -209,5 +209,15 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) userLogout(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "TODO", 500)
+	err := app.sessionManager.RenewToken(r.Context())
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.sessionManager.Remove(r.Context(), "authenticatedUserID")
+
+	app.sessionManager.Put(r.Context(), "flash", "You've been logged out")
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
