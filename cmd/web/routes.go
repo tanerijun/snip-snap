@@ -17,7 +17,7 @@ func (app *application) routes(staticDir string) http.Handler {
 	fileServer := http.FileServer(http.Dir(staticDir))
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
-	dynamicMiddlewares := alice.New(app.sessionManager.LoadAndSave)
+	dynamicMiddlewares := alice.New(app.sessionManager.LoadAndSave, noSurf)
 
 	router.Handler(http.MethodGet, "/", dynamicMiddlewares.ThenFunc(app.home))
 	router.Handler(http.MethodGet, "/snippet/view/:id", dynamicMiddlewares.ThenFunc(app.snippetView))
