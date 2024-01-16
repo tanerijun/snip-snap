@@ -1,6 +1,10 @@
 package mocks
 
-import "github.com/tanerijun/snip-snap/internal/models"
+import (
+	"time"
+
+	"github.com/tanerijun/snip-snap/internal/models"
+)
 
 type UserModel struct{}
 
@@ -28,4 +32,19 @@ func (m *UserModel) Exists(id int) (bool, error) {
 	default:
 		return false, nil
 	}
+}
+
+func (m *UserModel) Get(id int) (*models.User, error) {
+	if id == 1 {
+		usr := &models.User{
+			ID:      1,
+			Name:    "Bob",
+			Email:   "bob@example.com",
+			Created: time.Now(),
+		}
+
+		return usr, nil
+	}
+
+	return nil, models.ErrNoRecord
 }
