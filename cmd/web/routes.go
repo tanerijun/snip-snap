@@ -23,6 +23,7 @@ func (app *application) routes() http.Handler {
 	dynamicMiddlewares := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 
 	router.Handler(http.MethodGet, "/", dynamicMiddlewares.ThenFunc(app.home))
+	router.Handler(http.MethodGet, "/about", dynamicMiddlewares.ThenFunc(app.about))
 	router.Handler(http.MethodGet, "/snippet/view/:id", dynamicMiddlewares.ThenFunc(app.snippetView))
 	router.Handler(http.MethodGet, "/user/login", dynamicMiddlewares.ThenFunc(app.userLogin))
 	router.Handler(http.MethodPost, "/user/login", dynamicMiddlewares.ThenFunc(app.userLoginPost))
