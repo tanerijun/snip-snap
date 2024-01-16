@@ -19,6 +19,7 @@ import (
 
 // Handler dependencies
 type application struct {
+	debug          bool
 	infoLog        *log.Logger
 	errorLog       *log.Logger
 	snippets       models.SnippetModelInterface
@@ -31,6 +32,7 @@ type application struct {
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	dsn := flag.String("dsn", "", "PostgreSQL data source name (required)")
+	debug := flag.Bool("debug", false, "Enable debug mode")
 
 	flag.Parse()
 	if *dsn == "" {
@@ -60,6 +62,7 @@ func main() {
 	sessionManager.Cookie.Secure = true
 
 	app := &application{
+		debug:          *debug,
 		infoLog:        infoLog,
 		errorLog:       errorLog,
 		snippets:       &models.SnippetModel{DB: db},
