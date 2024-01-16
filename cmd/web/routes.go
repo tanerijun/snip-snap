@@ -8,7 +8,7 @@ import (
 	"github.com/tanerijun/snip-snap/ui"
 )
 
-func (app *application) routes(staticDir string) http.Handler {
+func (app *application) routes() http.Handler {
 	router := httprouter.New()
 
 	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
