@@ -18,6 +18,8 @@ func (app *application) routes(staticDir string) http.Handler {
 	fileServer := http.FileServer(http.FS(ui.Files))
 	router.Handler(http.MethodGet, "/static/*filepath", fileServer)
 
+	router.Handler(http.MethodGet, "/health", http.HandlerFunc(ping))
+
 	dynamicMiddlewares := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 
 	router.Handler(http.MethodGet, "/", dynamicMiddlewares.ThenFunc(app.home))
