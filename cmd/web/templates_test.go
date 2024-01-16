@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 	"time"
+
+	"github.com/tanerijun/snip-snap/internal/assert"
 )
 
 func TestFormatDate(t *testing.T) {
@@ -32,9 +34,7 @@ func TestFormatDate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			fd := formatDate(tt.tm)
 
-			if fd != tt.want {
-				t.Errorf("got %q; want %q", fd, tt.want)
-			}
+			assert.Equal(t, fd, tt.want)
 		})
 	}
 }
