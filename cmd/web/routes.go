@@ -5,6 +5,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/justinas/alice"
+	"github.com/tanerijun/snip-snap/ui"
 )
 
 func (app *application) routes(staticDir string) http.Handler {
@@ -14,8 +15,8 @@ func (app *application) routes(staticDir string) http.Handler {
 		app.notFound(w)
 	})
 
-	fileServer := http.FileServer(http.Dir(staticDir))
-	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
+	fileServer := http.FileServer(http.FS(ui.Files))
+	router.Handler(http.MethodGet, "/static/*filepath", fileServer)
 
 	dynamicMiddlewares := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 
