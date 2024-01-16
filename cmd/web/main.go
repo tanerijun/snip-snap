@@ -30,7 +30,6 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	staticDir := flag.String("static-dir", "./ui/static", "Path to static assets")
 	dsn := flag.String("dsn", "", "PostgreSQL data source name (required)")
 
 	flag.Parse()
@@ -74,7 +73,7 @@ func main() {
 		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256}, // use only elliptic curves with assembly implementations to save compute power
 	}
 
-	mux := app.routes(*staticDir)
+	mux := app.routes()
 
 	server := &http.Server{
 		Addr:         *addr,
