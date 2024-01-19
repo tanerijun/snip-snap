@@ -35,6 +35,8 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/snippet/create", protectedMiddlewares.ThenFunc(app.snippetCreate))
 	router.Handler(http.MethodPost, "/snippet/create", protectedMiddlewares.ThenFunc(app.snippetCreatePost))
 	router.Handler(http.MethodGet, "/account/view", protectedMiddlewares.ThenFunc(app.accountView))
+	router.Handler(http.MethodGet, "/account/password/update", protectedMiddlewares.ThenFunc(app.accountPasswordUpdate))
+	router.Handler(http.MethodPost, "/account/password/update", protectedMiddlewares.ThenFunc(app.accountPasswordUpdatePost))
 	router.Handler(http.MethodPost, "/user/logout", protectedMiddlewares.ThenFunc(app.userLogout))
 
 	standardMiddlewares := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
